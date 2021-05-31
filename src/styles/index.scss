@@ -11,3 +11,43 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+
+body {
+    background-color: #F4F4F4;
+    padding-top: 20px;
+}
+
+.todo-header {
+    color: #E1BCBC;
+    font-family: 'Nothing You Could Do', cursive;
+    text-align: center;
+}
+
+.table {
+    width: 600px;
+}
+
+.input-style {
+    min-height: 50px;
+    border-style: none none solid none;
+    border-color: #E1E1E1;
+    border-width: 1px;
+    outline: none;
+    font-size: 20px;
+    color: #B8B1B1;
+    position: relative;
+}
+
+.input-button-style {
+    border-style: none;
+    border-color: #E1E1E1;
+    outline: none;
+    color: #B8B1B1;
+    position: absolute;
+    right: 5px;
+}
+
+.items-left-div {
+    color: #a3a2a2;
+    font-size: 15px;
+}
