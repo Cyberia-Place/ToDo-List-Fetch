@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const ToDoList = () => {
 	const [todoList, setTodoList] = useState([]);
-	const [todo, setTodo] = useState("");
 	const [visibility, setVisibility] = useState("");
 
-	const userInterface = todoList.map((element, index) => {
+	useEffect(() => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/elias")
+			.then(resp => resp.json())
+			.then(data => setTodoList(data))
+			.catch(error => console.log(error));
+	}, []);
+
+	const userInterface = todoList.map((todo, index) => {
 		return (
 			<div
 				key={index}
 				className="input-style px-5 py-2"
 				onMouseEnter={() => setVisibility(index)}
 				onMouseLeave={() => setVisibility("")}>
-				{todoList[index]}
+				{todo.label}
 				<button
 					type="button"
 					className={`input-button-style bg-white ${
@@ -25,19 +31,44 @@ export const ToDoList = () => {
 		);
 	});
 
-	const submitFunction = event => {
-		setTodoList([...todoList, todo]);
-		event.preventDefault();
+	const updateData = updatedList => {
+		let updatedListToSend = JSON.stringify(updatedList);
+		let options = {
+			method: "PUT",
+			body: updatedListToSend,
+			headers: {
+				"Content-Type": "application/json"
+			}
+		};
+
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/elias", options)
+			.then(resp => resp.json().then(data => console.log(data)))
+			.then(error => console.log(error));
+	};
+
+	const handleKeyPress = e => {
+		if (e.target.value !== "" && e.charCode === 13) {
+			let newToDo = {
+				label: e.target.value,
+				done: false
+			};
+			let newToDoList = [...todoList, newToDo];
+			setTodoList(newToDoList);
+			updateData(newToDoList);
+			e.target.value = "";
+			e.preventDefault();
+		}
 	};
 
 	const deleteToDo = index => {
 		var array = [...todoList];
 		array.splice(index, 1);
 		setTodoList(array);
+		updateData(array);
 	};
 
 	return (
-		<form onSubmit={submitFunction}>
+		<form>
 			<div className="card table rounded-0">
 				<input
 					type="text"
@@ -47,7 +78,7 @@ export const ToDoList = () => {
 							? "What needs to be done?"
 							: "No tasks, add a task"
 					}
-					onChange={event => setTodo(event.target.value)}
+					onKeyPress={handleKeyPress}
 				/>
 				{userInterface}
 				<div className="items-left-div px-3 py-3">
